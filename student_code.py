@@ -142,7 +142,33 @@ class KnowledgeBase(object):
         """
         ####################################################
         # Student code goes here
+        answer = kb_explain_helper(self, fact_or_rule, 0)
+        return answer
 
+def kb_explain_helper(KB, fact_or_rule, indent_lvl):
+    if isinstance(fact_or_rule, Fact):
+        FR = KB._get_fact(fact_or_rule)
+        FRs = "fact: " + str(fact_or_rule.statement)
+    elif isinstance(fact_or_rule, Rule):
+        FR = KB._get_rule(fact_or_rule)
+        FRs = "rule: (" + ', '.join([str(statement) for statement in fact_or_rule.lhs]) + ") -> " + str(fact_or_rule.rhs)
+    else:
+        return False
+
+    if (factq(fact_or_rule) and (fact_or_rule not in KB.facts)):
+        return "Fact is not in the KB"
+    elif ((not factq(fact_or_rule)) and (fact_or_rule not in KB.rules)):
+        return "Rule is not in the KB"
+
+    if (not FR.supported_by):
+        return ("  " * indent_lvl + FRs + " ASSERTED")
+    else:
+        answer = ("  " * indent_lvl + FRs)
+        for pair in FR.supported_by:
+            answer += ('\n' + "  " * (indent_lvl+ 1) + "SUPPORTED BY\n")
+            answer += (kb_explain_helper(KB, pair[0], (indent_lvl + 2)) + '\n')
+            answer += (kb_explain_helper(KB, pair[1], (indent_lvl + 2)))
+        return answer
 
 class InferenceEngine(object):
     def fc_infer(self, fact, rule, kb):

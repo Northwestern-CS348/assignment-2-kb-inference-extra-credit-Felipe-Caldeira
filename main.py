@@ -19,6 +19,7 @@ class KBTest(unittest.TestCase):
 
     def test01(self):
         # KB does not contain
+        #breakpoint()
         actual = self.KB.kb_explain(read.parse_input("fact: (notContains kb fact)"))
         self.compare("Fact is not in the KB", actual)
         actual = self.KB.kb_explain(read.parse_input("rule: ((contains bowl flour) (contains bowl water)) -> (contains bowl wetFlour)"))
@@ -83,6 +84,7 @@ fact: (eats nyala leaves)\n\
         fact: (eats nyala plantBasedFood) ASSERTED\n\
         rule: ((eats ?x plantBasedFood), (isa ?y plantBasedFood)) -> (eats ?x ?y) ASSERTED\
 '
+        breakpoint()
         actual = self.KB.kb_explain(read.parse_input("fact: (eats nyala leaves)"))
         self.compare(self.expected, actual)
 
